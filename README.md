@@ -13,47 +13,49 @@ management.
 
 The project is organized around the following principles:
 
--   Controllers contain only request/response logic.
--   Business logic lives inside the `app/services` directory.
--   Validation is handled through dedicated validator classes.
--   Database access is handled through Lucid ORM.
--   Authentication uses JWT access tokens and hashed refresh tokens.
--   Authorization is enforced using RBAC middleware.
--   Expired refresh tokens are automatically cleaned by the scheduler.
+- Controllers contain only request/response logic.
+- Business logic lives inside the `app/services` directory.
+- Validation is handled through dedicated validator classes.
+- Database access is handled through Lucid ORM.
+- Authentication uses JWT access tokens and hashed refresh tokens.
+- Authorization is enforced using RBAC middleware.
+- Expired refresh tokens are automatically cleaned by the scheduler.
 
-------------------------------------------------------------------------
+---
 
 # Technology Stack
 
--   AdonisJS v6
--   TypeScript
--   Lucid ORM
--   MySQL
--   JWT Authentication
--   Adonis Hash Service
--   Japa (Testing)
+- AdonisJS v6
+- TypeScript
+- Lucid ORM
+- MySQL
+- JWT Authentication
+- Adonis Hash Service
+- Japa (Testing)
 
-------------------------------------------------------------------------
+---
 
 # Packages Used
 
-  Package               Why it was used
-  --------------------- -------------------------------
-  @adonisjs/core        Main framework
-  @adonisjs/lucid       ORM and migrations
-  mysql2                MySQL driver
-  @adonisjs/auth        Authentication
-  jsonwebtoken          JWT creation and verification
-  @adonisjs/hash        Password hashing
-  @adonisjs/scheduler   Daily cleanup task
-  vinejs                Request validation
-  luxon                 Date handling
+Package Why it was used
 
-------------------------------------------------------------------------
+---
+
+@adonisjs/core Main framework
+@adonisjs/lucid ORM and migrations
+mysql2 MySQL driver
+@adonisjs/auth Authentication
+jsonwebtoken JWT creation and verification
+@adonisjs/hash Password hashing
+@adonisjs/scheduler Daily cleanup task
+vinejs Request validation
+luxon Date handling
+
+---
 
 # Project Structure
 
-``` text
+```text
 app/
  ├── controllers/
  ├── middleware/
@@ -68,12 +70,12 @@ start/
  └── routes.ts
 ```
 
-------------------------------------------------------------------------
+---
 
 # Installation
 
-``` bash
-git clone <repository-url>
+```bash
+npm create adonisjs@latest [project-name] -- --kit=api
 
 cd my-adonis-project
 
@@ -88,10 +90,11 @@ node ace db:seed
 npm run dev
 ```
 
-------------------------------------------------------------------------
+---
 
 # Environment Variables
 
+```bash
   Variable      Description
   ------------- ------------------------
   PORT          Server port
@@ -104,28 +107,29 @@ npm run dev
   DB_PASSWORD   Database password
   DB_DATABASE   Database name
   JWT_SECRET    Secret for signing JWT
+```
 
 The application validates all required environment variables using
 `Env.schema`. If any required variable is missing, the application fails
 during startup instead of producing runtime errors.
 
-------------------------------------------------------------------------
+---
 
 # Architecture Decisions
 
 The application follows a layered architecture.
 
--   Controllers receive HTTP requests.
--   Validators validate incoming data.
--   Services contain business logic.
--   Models communicate with the database.
--   Middleware handles cross-cutting concerns like authentication, RBAC,
-    and logging.
+- Controllers receive HTTP requests.
+- Validators validate incoming data.
+- Services contain business logic.
+- Models communicate with the database.
+- Middleware handles cross-cutting concerns like authentication, RBAC,
+  and logging.
 
 This separation keeps controllers small, improves maintainability, and
 makes business logic easier to test.
 
-------------------------------------------------------------------------
+---
 
 # Logger Middleware
 
@@ -133,14 +137,14 @@ A global middleware logs every request using Adonis Logger.
 
 Example:
 
-``` text
+```text
 GET /api/products 200 15ms
 ```
 
 Using `ctx.logger` integrates with Adonis logging and supports different
 log transports and environments.
 
-------------------------------------------------------------------------
+---
 
 # Global Exception Handler
 
@@ -151,25 +155,25 @@ Development returns useful debugging information.
 Production never exposes stack traces or internal implementation
 details.
 
-------------------------------------------------------------------------
+---
 
 # Health Endpoint
 
-``` http
+```http
 GET /health
 ```
 
 Returns:
 
-``` json
+```json
 {
-  "status":"ok",
-  "uptime":152,
-  "timestamp":"2026-07-04T18:30:00Z"
+  "status": "ok",
+  "uptime": 152,
+  "timestamp": "2026-07-04T18:30:00Z"
 }
 ```
 
-------------------------------------------------------------------------
+---
 
 # Level 1 Answers
 
@@ -200,7 +204,7 @@ modifying consumers.
 Without it, missing variables might remain unnoticed until the affected
 code executes, leading to runtime failures that are harder to debug.
 
-------------------------------------------------------------------------
+---
 
 # Level 2 Answers
 
@@ -211,7 +215,7 @@ physically removing records. Queries automatically ignore deleted rows.
 
 Without it, every query would require:
 
-``` sql
+```sql
 WHERE deleted_at IS NULL
 ```
 
@@ -234,28 +238,28 @@ PATCH modifies only supplied fields.
 Using PUT with missing properties could accidentally overwrite existing
 values with NULL or defaults, while PATCH preserves unchanged fields.
 
-------------------------------------------------------------------------
+---
 
 # Level 3 Design
 
 ## Entities
 
--   Users
--   Products
--   Categories
--   Orders
--   Order Items
--   Reviews
--   Refresh Tokens
+- Users
+- Products
+- Categories
+- Orders
+- Order Items
+- Reviews
+- Refresh Tokens
 
 ## Relationships
 
--   Category has many Products.
--   User has many Orders.
--   Order has many Order Items.
--   Product belongs to Category.
--   Product has many Reviews.
--   User writes Reviews.
+- Category has many Products.
+- User has many Orders.
+- Order has many Order Items.
+- Product belongs to Category.
+- Product has many Reviews.
+- User writes Reviews.
 
 The order_items table stores the unit price separately to preserve
 historical pricing. If a product price changes later, old invoices and
@@ -280,7 +284,7 @@ efficiently.
 Loading relationships inside loops creates unnecessary database queries
 and significantly impacts performance.
 
-------------------------------------------------------------------------
+---
 
 # Level 4 Authentication
 
@@ -332,32 +336,32 @@ Multiple guards are useful when an application supports different
 authentication mechanisms, such as JWT for APIs and session
 authentication for an admin dashboard.
 
-------------------------------------------------------------------------
+---
 
 # Security Considerations
 
--   Passwords are hashed.
--   Refresh tokens are hashed.
--   JWT expiration is short.
--   Token rotation implemented.
--   Input validation everywhere.
--   Soft deletes protect accidental data loss.
--   Structured exception handling.
--   Role-based authorization.
+- Passwords are hashed.
+- Refresh tokens are hashed.
+- JWT expiration is short.
+- Token rotation implemented.
+- Input validation everywhere.
+- Soft deletes protect accidental data loss.
+- Structured exception handling.
+- Role-based authorization.
 
-------------------------------------------------------------------------
+---
 
 # Future Improvements
 
--   Redis caching
--   Rate limiting
--   Audit logging
--   OpenAPI documentation
--   Docker deployment
--   CI/CD pipeline
--   Monitoring with Prometheus/Grafana
+- Redis caching
+- Rate limiting
+- Audit logging
+- OpenAPI documentation
+- Docker deployment
+- CI/CD pipeline
+- Monitoring with Prometheus/Grafana
 
-------------------------------------------------------------------------
+---
 
 # Conclusion
 

@@ -96,7 +96,7 @@ export default class ProductsController {
       })
     }
 
-    product.deletedAt = DateTime.now()
+    product.deleted_at = DateTime.now()
 
     await product.save()
 

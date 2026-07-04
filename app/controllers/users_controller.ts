@@ -25,7 +25,7 @@ export default class UsersController {
       return response.status(400).json({ error: 'Missing fields' })
     }
 
-    const user = await User.create({ fullName: name, email })
+    const user = await User.create({ name, email })
 
     //AdonisJS doesn't have response.json().
     // response.status(201).json(user)

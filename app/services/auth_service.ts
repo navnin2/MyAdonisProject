@@ -50,7 +50,10 @@ export default class AuthService {
     const user = await User.findBy('email', payload.email)
 
     if (!user) {
-      throw new Error('Invalid email or password')
+      throw new Exception('Invalid email or password', {
+        status: 401,
+        code: 'E_INVALID_CREDENTIALS',
+      })
     }
 
     /**
@@ -59,7 +62,10 @@ export default class AuthService {
      */
 
     if (user.lockoutUntil && user.lockoutUntil > DateTime.now()) {
-      throw new Error(`Account locked until ${user.lockoutUntil.toISO()}`)
+      throw new Exception(`Account locked until ${user.lockoutUntil.toISO()}`, {
+        status: 401,
+        code: 'E_ACCOUNT_LOCKED',
+      })
     }
 
     const isPasswordValid = await hash.verify(user.password, payload.password)
@@ -79,7 +85,10 @@ export default class AuthService {
 
       await user.save()
 
-      throw new Error('Invalid email or password')
+      throw new Exception('Invalid email or password', {
+        status: 401,
+        code: 'E_INVALID_CREDENTIALS',
+      })
     }
 
     /**

@@ -1,10 +1,5 @@
 import { DateTime } from 'luxon'
-import {
-  BaseModel,
-  column,
-  belongsTo,
-  hasMany,
-} from '@adonisjs/lucid/orm'
+import { BaseModel, column, belongsTo, hasMany } from '@adonisjs/lucid/orm'
 
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 
@@ -25,6 +20,7 @@ export default class Product extends BaseModel {
     'isActive',
     'createdAt',
     'updatedAt',
+    'deleted_at',
   ] as const
 
   $columns = Product.$columns
@@ -64,4 +60,7 @@ export default class Product extends BaseModel {
 
   @hasMany(() => Review)
   declare reviews: HasMany<typeof Review>
+
+  @column.dateTime()
+  declare deleted_at: DateTime<true>
 }
