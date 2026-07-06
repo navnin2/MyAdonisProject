@@ -21,8 +21,8 @@ JOIN orders o
 JOIN products p
     ON oi.product_id = p.id
 JOIN categories c
-    ON p.category_id = c.id
-WHERE DATE_FORMAT(o.ordered_at,'%Y-%m')='2024-01'
+    ON p.category = c.name
+WHERE DATE_FORMAT(o.ordered_at,'%Y-%m')='2025-07'
 GROUP BY
     p.id,
     p.name,
@@ -60,7 +60,7 @@ SELECT DISTINCT
     c.name AS category
 FROM products p
 JOIN categories c
-    ON c.id = p.category_id
+    ON c.name = p.category
 JOIN order_items oi
     ON oi.product_id = p.id
 JOIN orders o
@@ -161,7 +161,7 @@ SELECT
     COUNT(r.id) AS total_reviews
 FROM categories c
 JOIN products p
-    ON p.category_id = c.id
+    ON p.category = c.name
 JOIN reviews r
     ON r.product_id = p.id
 GROUP BY

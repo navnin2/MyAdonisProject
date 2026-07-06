@@ -4,10 +4,6 @@ type ParamValue = string | number | bigint | boolean
 
 export type ScannedRoutes = {
   ALL: {
-    'auth.new_account.store': { paramsTuple?: []; params?: {} }
-    'auth.access_tokens.store': { paramsTuple?: []; params?: {} }
-    'profile.profile.show': { paramsTuple?: []; params?: {} }
-    'profile.access_tokens.destroy': { paramsTuple?: []; params?: {} }
     'users.index': { paramsTuple?: []; params?: {} }
     'users.store': { paramsTuple?: []; params?: {} }
     'users.crash': { paramsTuple?: []; params?: {} }
@@ -26,7 +22,6 @@ export type ScannedRoutes = {
     'auth.logout': { paramsTuple?: []; params?: {} }
   }
   GET: {
-    'profile.profile.show': { paramsTuple?: []; params?: {} }
     'users.index': { paramsTuple?: []; params?: {} }
     'users.crash': { paramsTuple?: []; params?: {} }
     'products.index': { paramsTuple?: []; params?: {} }
@@ -38,7 +33,6 @@ export type ScannedRoutes = {
     'store.category_ratings': { paramsTuple?: []; params?: {} }
   }
   HEAD: {
-    'profile.profile.show': { paramsTuple?: []; params?: {} }
     'users.index': { paramsTuple?: []; params?: {} }
     'users.crash': { paramsTuple?: []; params?: {} }
     'products.index': { paramsTuple?: []; params?: {} }
@@ -50,9 +44,6 @@ export type ScannedRoutes = {
     'store.category_ratings': { paramsTuple?: []; params?: {} }
   }
   POST: {
-    'auth.new_account.store': { paramsTuple?: []; params?: {} }
-    'auth.access_tokens.store': { paramsTuple?: []; params?: {} }
-    'profile.access_tokens.destroy': { paramsTuple?: []; params?: {} }
     'users.store': { paramsTuple?: []; params?: {} }
     'products.store': { paramsTuple?: []; params?: {} }
     'auth.register': { paramsTuple?: []; params?: {} }
