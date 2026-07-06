@@ -1,9 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { NextFn } from '@adonisjs/core/types/http'
-import jwt from 'jsonwebtoken'
-import env from '#start/env'
+import type { NextFn } from '@adonisjs/core/types/http'
 import { Exception } from '@adonisjs/core/exceptions'
-import User from '#models/user'
 
 export default class RbacMiddleware {
   async handle(
@@ -11,34 +8,12 @@ export default class RbacMiddleware {
     next: NextFn,
     options: { roles: string[] }
   ) {
-    const authHeader = ctx.request.header('authorization')
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new Exception('Authorization token missing', {
-        status: 401,
-        code: 'E_UNAUTHORIZED',
-      })
-    }
-
-    const token = authHeader.replace('Bearer ', '')
-
-    let payload: any
-
-    try {
-      payload = jwt.verify(token, env.get('JWT_SECRET'))
-    } catch {
-      throw new Exception('Invalid or expired token', {
-        status: 401,
-        code: 'E_INVALID_TOKEN',
-      })
-    }
-
-    const user = await User.find(payload.id)
+    const user = ctx.user
 
     if (!user) {
-      throw new Exception('User not found', {
+      throw new Exception('Unauthorized', {
         status: 401,
-        code: 'E_USER_NOT_FOUND',
+        code: 'E_UNAUTHORIZED',
       })
     }
 
@@ -48,12 +23,6 @@ export default class RbacMiddleware {
         code: 'E_FORBIDDEN',
       })
     }
-
-    /**
-     * Attach authenticated user
-     */
-
-    ctx.user = user
 
     await next()
   }

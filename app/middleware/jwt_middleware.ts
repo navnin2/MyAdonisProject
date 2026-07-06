@@ -1,40 +1,43 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import { Exception } from '@adonisjs/core/exceptions'
 import JwtService from '#services/jwt_service'
-
-/**
- * Auth middleware is used authenticate HTTP requests and deny
- * access to unauthenticated users.
- */
-// export default class AuthMiddleware {
-//   async handle(
-//     ctx: HttpContext,
-//     next: NextFn,
-//     options: {
-//       guards?: (keyof Authenticators)[]
-//     } = {}
-//   ) {
-//     await ctx.auth.authenticateUsing(options.guards)
-//     return next()
-//   }
-// }
+import User from '#models/user'
 
 export default class JwtAuthMiddleware {
   async handle(ctx: HttpContext, next: () => Promise<void>) {
     const authHeader = ctx.request.header('authorization')
 
     if (!authHeader?.startsWith('Bearer ')) {
-      return ctx.response.unauthorized({
-        message: 'Missing token',
+      throw new Exception('Missing token', {
+        status: 401,
+        code: 'E_UNAUTHORIZED',
       })
     }
 
     const token = authHeader.replace('Bearer ', '')
 
-    const payload = JwtService.verifyAccessToken(token)
+    let payload: any
 
-    // ctx.auth.user is a readonly property on the AuthContract type.
-    // Cast to any to allow assigning the verified JWT payload for downstream use.
-    ;(ctx.auth as any).user = payload
+    try {
+      payload = JwtService.verifyAccessToken(token)
+    } catch {
+      throw new Exception('Invalid or expired token', {
+        status: 401,
+        code: 'E_INVALID_TOKEN',
+      })
+    }
+
+    const user = await User.find(payload.id)
+
+    if (!user) {
+      throw new Exception('User not found', {
+        status: 401,
+        code: 'E_USER_NOT_FOUND',
+      })
+    }
+
+    // Attach user to HttpContext
+    ctx.user = user
 
     await next()
   }

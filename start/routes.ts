@@ -76,6 +76,4 @@ router
 
 router.post('/register', '#controllers/auth_controller.register')
 router.post('/login', '#controllers/auth_controller.login')
-router.post('/logout', '#controllers/auth_controller.logout').use([
-  middleware.auth(),
-])
+router.post('/logout', '#controllers/auth_controller.logout').use([middleware.auth()])
